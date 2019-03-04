@@ -80,7 +80,7 @@ void CListenSocket::SendAllMessage(TCHAR* pszMessage)
 
 			int checkLenOfData = pClient->Send(pszMessage, lstrlen(pszMessage) * 2);
 			if (checkLenOfData != lstrlen(pszMessage) * 2) {
-				AfxMessageBox(_T("일부 데이터가 정상적을 전송되지 못했습니다!"));
+				AfxMessageBox(_T("일부 데이터가 정상적으로 전송되지 못했습니다!"));
 			}
 		}
 	}
