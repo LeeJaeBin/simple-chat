@@ -33,7 +33,10 @@ void CConnectSocket::OnReceive(int nErrorCode)
 		int cnt = pMain->m_List.GetCount();
 		CString originText = szBuffer;
 
-		if (originText.Find(pMain->name) != -1) {
+		CString RecName = pMain->name;
+		RecName = L"[" + RecName + L"]:";
+
+		if (originText.Find(RecName) != -1) {
 			originText = L"¡Ú " + originText;
 		}
 		else {
