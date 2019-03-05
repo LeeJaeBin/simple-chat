@@ -33,8 +33,12 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	CString name;
 	CConnectSocket m_Socket;
 	afx_msg void OnBnClickedButton1();
 	CListBox m_List;
 	afx_msg void OnBnClickedButton2();
+	int checknew;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

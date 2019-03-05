@@ -31,7 +31,16 @@ void CConnectSocket::OnReceive(int nErrorCode)
 	if (Receive(szBuffer, sizeof(szBuffer)) > 0) {
 		CSocketClientDlg* pMain = (CSocketClientDlg*)AfxGetMainWnd();
 		int cnt = pMain->m_List.GetCount();
-		pMain->m_List.InsertString(cnt, szBuffer);
+		CString originText = szBuffer;
+
+		if (originText.Find(pMain->name) != -1) {
+			originText = L"¡Ú " + originText;
+		}
+		else {
+			originText = L"   " + originText;
+		}
+		pMain->m_List.InsertString(cnt, originText);
+		pMain->checknew = 1;
 	}
 	CSocket::OnReceive(nErrorCode);
 }

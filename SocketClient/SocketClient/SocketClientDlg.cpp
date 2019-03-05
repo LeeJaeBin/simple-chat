@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CSocketClientDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CSocketClientDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CSocketClientDlg::OnBnClickedButton2)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -102,15 +103,26 @@ BOOL CSocketClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
+	GotoDlgCtrl(GetDlgItem(IDC_INPUT));
+
+	CButton *button1 = (CButton*)GetDlgItem(IDOK);
+	CButton *button2 = (CButton*)GetDlgItem(IDCANCEL);
+	button1->DestroyWindow();
+	button2->DestroyWindow();
+
+	SetTimer(1, 100, NULL);
 	m_Socket.Create();
 	if (m_Socket.Connect(_T("127.0.0.1"), 21000) == FALSE) {
 		AfxMessageBox(_T("ERROR : Failed to connect Server"));
 		PostQuitMessage(0);
 		return FALSE;
 	}
+
+	CAlias dialog1 = new CAlias();
+	dialog1.DoModal();
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	
-	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
+	return FALSE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
 void CSocketClientDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -166,6 +178,7 @@ HCURSOR CSocketClientDlg::OnQueryDragIcon()
 
 void CSocketClientDlg::OnBnClickedButton1()
 {
+	checknew = 0;
 	CString str;
 
 	UpdateData(TRUE);
@@ -183,4 +196,32 @@ void CSocketClientDlg::OnBnClickedButton2()
 	CAlias dialog1 = new CAlias();
 	dialog1.DoModal();
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CSocketClientDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (checknew == 1) {
+		int line = m_List.GetCount(); //추가한 갯수를 얻어옴
+		m_List.SetTopIndex(line - 1); //얻어온 갯수로 스크롤 시킴
+		checknew = 0;
+	}
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+BOOL CSocketClientDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+		{   // 위 VK_RETURN은 Enter, VK_ESCAPE는 ESC을 의미함. 필요시 하나만 사용.
+			OnBnClickedButton1();
+			return true;
+		}
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
